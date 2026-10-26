@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Saúde da Família">
+<title>Saúde da família</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon-192.svg">
+<link rel="apple-touch-icon" href="icon-192.svg">
+
+<style>
+:root {
+  --bg: #f5f5f2;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6b66;
+  --line: #d9d9d3;
+  --ac: #0f766e;
+  --ac-soft: #e6f4f1;
+  --bad: #c2410c;
+  --warn: #d97706;
+  --warn-bg: #fffbeb;
+  --fs-base: 16px;
+  --fs-card: 17px;
+  --fs-note: 13px;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+:root[data-font="large"] {
+  --fs-base: 18px;
+  --fs-card: 20px;
+  --fs-note: 15px;
+}
+
+:root[data-font="xlarge"] {
+  --fs-base: 20px;
+  --fs-card: 22px;
+  --fs-note: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111210;
+    --card: #1c1d1b;
+    --text: #f1f1ec;
+    --muted: #a0a09a;
+    --line: #34352f;
+    --ac: #2dd4bf;
+    --ac-soft: #132e2b;
+    --bad: #ff7a3d;
+    --warn: #f59e0b;
+    --warn-bg: #261c0c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111210;
+  --card: #1c1d1b;
+  --text: #f1f1ec;
+  --muted: #a0a09a;
+  --line: #34352f;
+  --ac: #2dd4bf;
+  --ac-soft: #132e2b;
+  --bad: #ff7a3d;
+  --warn: #f59e0b;
+  --warn-bg: #261c0c;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--fs-base);
+  min-height: 100vh;
+}
+main {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px;
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h1 { font-size: 1.25rem; margin: 4px 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.ic {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  font-size: 20px;
+  padding: 8px 12px;
+  min-height: 44px;
+}
+.chips-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chip-btn {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 8px 16px;
+  color: inherit;
+  font-size: var(--fs-base);
+  white-space: nowrap;
+  min-height: 42px;
+}
+.chip-btn.on {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+}
+.chip-add {
+  border: 1px dashed var(--line);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  min-height: 42px;
+}
+
+.empty {
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+}
+.head b { font-size: 1.35rem; }
+.obs {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-base);
+  white-space: pre-wrap;
+}
+.link {
+  border: 0;
+  background: none;
+  color: var(--ac);
+  font-weight: 600;
+  padding: 8px 4px;
+  min-height: 38px;
+}
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 14px 0;
+}
+.tabs button {
+  padding: 12px 4px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: var(--fs-base);
+  min-height: 48px;
+}
+.tabs button.on {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.pri {
+  background: var(--ac);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  padding: 13px;
+  font-weight: 700;
+  font-size: var(--fs-base);
+  width: 100%;
+  min-height: 48px;
+}
+.sec {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 13px;
+  font-size: var(--fs-base);
+  width: 100%;
+  min-height: 48px;
+}
+.del {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  background: none;
+  border: 1px solid var(--bad);
+  color: var(--bad);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: var(--fs-base);
+  min-height: 48px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.card b { font-size: var(--fs-card); }
+.card .s { color: var(--muted); font-size: var(--fs-base); margin-top: 4px; }
+.card .doc { color: var(--ac); font-size: calc(var(--fs-base) * 0.9); margin-top: 4px; font-weight: 500; }
+.card.off { opacity: .6; }
+h3 {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 18px 0 6px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+input, textarea, select {
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+.q { margin-top: 10px; }
+
+.input-wrap { position: relative; }
+.sug {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 4px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 50;
+}
+.sug button {
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  padding: 12px;
+  font-size: var(--fs-base);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+}
+.sug button:last-child { border-bottom: 0; }
+.sug button .custom-tag {
+  font-size: 11px;
+  background: var(--ac-soft);
+  color: var(--ac);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.pres { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pres button {
+  border: 1px solid var(--ac);
+  background: none;
+  color: var(--ac);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: calc(var(--fs-base) * 0.85);
+  font-weight: 600;
+  min-height: 36px;
+}
+.crow { display: flex; gap: 10px; align-items: center; }
+.grow { flex: 1; min-width: 0; }
+.mv { display: flex; flex-direction: column; gap: 4px; }
+.mv button {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 8px;
+  width: 40px;
+  height: 34px;
+  font-size: 14px;
+  padding: 0;
+}
+.mv button:disabled { opacity: .25; }
+pre {
+  white-space: pre-wrap;
+  font: inherit;
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 0 0 10px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  overflow-y: auto;
+  z-index: 20;
+  padding: calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);
+}
+.sheet {
+  max-width: 520px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.sheet h2 { margin: 0 0 6px; font-size: 1.25rem; }
+.sheet label { display: block; margin-top: 12px; font-size: var(--fs-note); font-weight: 600; color: var(--muted); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.err { color: var(--bad); font-size: var(--fs-note); min-height: 18px; margin-top: 6px; font-weight: 500; }
+.note { font-size: var(--fs-note); color: var(--muted); line-height: 1.5; margin-top: 10px; }
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom,0px) + 20px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: var(--fs-base);
+  z-index: 30;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.banner {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-note);
+  color: var(--text);
+}
+.banner button {
+  background: var(--warn);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: var(--fs-note);
+  min-height: 36px;
+}
+
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+}
+.chart-title {
+  font-size: var(--fs-card);
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chart-svg {
+  width: 100%;
+  height: 170px;
+  overflow: visible;
+}
+
+.custom-med-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.custom-med-item:last-child { border-bottom: 0; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .top, .chips-wrap, .tabs, .pri, .sec, .ic, .banner, .note, #modal, #toast, .link, .mv, .q {
+    display: none !important;
+  }
+  main { max-width: 100%; margin: 0; padding: 0; }
+  pre {
+    border: 0;
+    padding: 0;
+    font-size: 13pt;
+    line-height: 1.6;
+    background: transparent;
+  }
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>🩺 Saúde da família</h1>
+    <button class="ic" id="cfg" aria-label="Backup, PIN e ajustes">⚙️</button>
+  </div>
+  
+  <div id="appBanner"></div>
+  
+  <div class="chips-wrap">
+    <div class="chips" id="chips"></div>
+    <button class="chip-add" id="addFamBtn">+ Familiar</button>
+  </div>
+  
+  <div id="panel"></div>
+  <p class="note">Os dados ficam salvos exclusivamente neste navegador. Exporte backups regulares em ⚙️.</p>
+</main>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  var KEY = 'saude_familia_v1';
+  var SNAP_1 = 'saude_familia_snap_1';
+  var SNAP_2 = 'saude_familia_snap_2';
+  var SNAP_DATES = 'saude_familia_snap_dates';
+  var PRE_RESTORE_KEY = 'saude_familia_pre_restore_backup';
+  var CURRENT_SCHEMA = 2;
+
+  var tab = 'd', q = '', tt, selectedExamName = '';
+  var isModalActive = false;
+  var isLocked = false;
+  
+  // Solicita persistência no Android/Chromium para evitar descarte por limpeza de disco
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().catch(function(){});
+  }
+
+  // Sanitização estrita contra XSS
+  function esc(s){
+    if(s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function $(i){ return document.getElementById(i); }
+  function el(t, c, x){
+    var e = document.createElement(t);
+    if(c) e.className = c;
+    if(x != null) e.textContent = x;
+    return e;
+  }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function p2(n){ return n < 10 ? '0' + n : '' + n; }
+  function today(){
+    var d = new Date();
+    return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+  }
+  function fd(i){ return i ? i.split('-').reverse().join('/') : ''; }
+
+  function norm(s){
+    return s ? s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : '';
+  }
+
+  // Validação estrita da estrutura dos dados
+  function validateSchema(o){
+    if(!o || typeof o !== 'object') return false;
+    if(!Array.isArray(o.m) || !Array.isArray(o.d) || !Array.isArray(o.x)) return false;
+
+    for(var i = 0; i < o.m.length; i++){
+      var item = o.m[i];
+      if(!item || typeof item !== 'object' || !item.id || typeof item.name !== 'string' || !item.name.trim()) return false;
+    }
+    for(var j = 0; j < o.d.length; j++){
+      var med = o.d[j];
+      if(!med || typeof med !== 'object' || !med.id || !med.mid || typeof med.n !== 'string' || !med.n.trim()) return false;
+    }
+    for(var k = 0; k < o.x.length; k++){
+      var ex = o.x[k];
+      if(!ex || typeof ex !== 'object' || !ex.id || !ex.mid || typeof ex.n !== 'string' || !ex.n.trim() || !ex.dt || !ex.v) return false;
+    }
+    return true;
+  }
+
+  function migrateData(o){
+    if(!o) o = {};
+    if(!Array.isArray(o.m)) o.m = [];
+    if(!Array.isArray(o.d)) o.d = [];
+    if(!Array.isArray(o.x)) o.x = [];
+    if(!Array.isArray(o.customMeds)) o.customMeds = [];
+    if(!Array.isArray(o.customExams)) o.customExams = [];
+    if(!o.fontSize) o.fontSize = 'normal';
+    if(!o.lastBackup) o.lastBackup = Date.now();
+    o.schema = CURRENT_SCHEMA;
+    return o;
+  }
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(validateSchema(parsed)){
+          return migrateData(parsed);
+        } else {
+          // Dado corrompido ou inválido: preserva cópia de segurança antes de iniciar
+          var dumpKey = 'saude_familia_corrupted_raw_' + Date.now();
+          localStorage.setItem(dumpKey, raw);
+          alert('Atenção: O banco de dados apresentou inconsistência estrutural. Uma cópia bruta foi protegida na chave "' + dumpKey + '".');
+        }
+      }
+    } catch(err){
+      try {
+        var corruptedText = localStorage.getItem(KEY);
+        if(corruptedText){
+          localStorage.setItem('saude_familia_corrupted_raw_' + Date.now(), corruptedText);
+        }
+      } catch(e){}
+      alert('Aviso: Falha na análise do JSON salvo. Uma cópia do conteúdo anterior foi preservada.');
+    }
+    return migrateData({ m: [], d: [], x: [], sel: null });
+  }
+
+  var db = load();
+
+  // Aplica preferência visual de fonte
+  if(db.fontSize && db.fontSize !== 'normal'){
+    document.documentElement.setAttribute('data-font', db.fontSize);
+  }
+
+  function cur(){
+    return db.m.filter(function(m){ return m.id === db.sel; })[0] || null;
+  }
+
+  function toast(t){
+    var e = $('toast');
+    e.textContent = t;
+    e.hidden = false;
+    clearTimeout(tt);
+    tt = setTimeout(function(){ e.hidden = true; }, 3200);
+  }
+
+  // Gerenciamento de histórico de navegação para o botão Voltar do Android
+  function openM(){
+    $('modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    if(!isModalActive){
+      isModalActive = true;
+      window.history.pushState({ modalOpen: true }, '');
+    }
+  }
+
+  function closeM(fromPopstate){
+    $('modal').hidden = true;
+    document.body.style.overflow = '';
+    if(isModalActive && !fromPopstate){
+      isModalActive = false;
+      window.history.back();
+    } else {
+      isModalActive = false;
+    }
+  }
+
+  window.addEventListener('popstate', function(){
+    if(isModalActive){
+      closeM(true);
+    }
+  });
+
+  // Snapshots automáticos diários de segurança (últimos 2 dias de uso)
+  function handleDailySnapshots(){
+    try {
+      var t = today();
+      var metaStr = localStorage.getItem(SNAP_DATES);
+      var meta = metaStr ? JSON.parse(metaStr) : { s1: null, s2: null };
+
+      if(meta.s1 !== t){
+        var curStr = localStorage.getItem(KEY);
+        if(curStr){
+          var oldS1 = localStorage.getItem(SNAP_1);
+          if(oldS1){
+            localStorage.setItem(SNAP_2, oldS1);
+            meta.s2 = meta.s1;
+          }
+          localStorage.setItem(SNAP_1, curStr);
+          meta.s1 = t;
+          localStorage.setItem(SNAP_DATES, JSON.stringify(meta));
+        }
+      }
+    } catch(e){}
+  }
+
+  function save(){
+    try {
+      localStorage.setItem(KEY, JSON.stringify(db));
+      handleDailySnapshots();
+    } catch(e){
+      var isQuota = (e.name === 'QuotaExceededError' || e.code === 22);
+      var alertTxt = isQuota
+        ? '⚠️ O espaço de armazenamento do navegador está esgotado! Seus dados recentes não foram salvos.'
+        : '⚠️ Erro ao salvar dados no navegador. Faça uma cópia em texto ou exporte o backup imediatamente.';
+      alert(alertTxt);
+    }
+  }
+
+  // Sincronização entre abas abertas simultaneamente
+  window.addEventListener('storage', function(e){
+    if(e.key === KEY && e.newValue){
+      try {
+        var remote = JSON.parse(e.newValue);
+        if(validateSchema(remote)){
+          db = migrateData(remote);
+          render();
+          toast('Dados sincronizados com outra aba aberta.');
+        }
+      } catch(err){}
+    }
+  });
+
+  function copy(t){
+    function fb(){
+      var a = document.createElement('textarea');
+      a.value = t;
+      a.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(a);
+      a.select();
+      try {
+        document.execCommand('copy');
+        toast('Copiado com sucesso');
+      } catch(e){
+        toast('Não foi possível copiar');
+      }
+      document.body.removeChild(a);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){ toast('Copiado com sucesso'); }, fb);
+    } else fb();
+  }
+
+  function processRestore(obj){
+    if(!validateSchema(obj)){
+      alert('Falha na restauração: Arquivo ou formato inválido. O arquivo deve conter listas válidas de familiares, medicamentos e exames.');
+      return false;
+    }
+
+    var confirmMsg = 'Atenção: A restauração substituirá todos os dados atuais deste navegador.\n\nUma cópia de segurança do seu estado atual será arquivada antes da troca.\n\nDeseja prosseguir?';
+    if(!confirm(confirmMsg)) return false;
+
+    try {
+      var currentRaw = localStorage.getItem(KEY);
+      if(currentRaw){
+        localStorage.setItem(PRE_RESTORE_KEY, currentRaw);
+      }
+    } catch(e){}
+
+    db = migrateData(obj);
+    db.lastBackup = Date.now();
+    save();
+    closeM();
+    render();
+    toast('Backup restaurado com sucesso! Cópia anterior protegida.');
+    return true;
+  }
+
+  // Parser numérico compatível com formatações brasileiras e valores compostos
+  function parseVal(valStr){
+    if(!valStr) return null;
+    var s = ('' + valStr).trim();
+    
+    // Detecta pressão arterial (ex.: 120/80 ou 12/8)
+    if(s.indexOf('/') >= 0){
+      var parts = s.split('/');
+      var p1 = parseFloat(parts[0].replace(/\./g, '').replace(',', '.').trim());
+      var p2 = parseFloat(parts[1].replace(/\./g, '').replace(',', '.').trim());
+      if(p1 > 0 && p1 < 30) p1 = p1 * 10;
+      if(p2 > 0 && p2 < 30) p2 = p2 * 10;
+      if(!isNaN(p1) && !isNaN(p2)){
+        return { isBP: true, sis: p1, dia: p2, raw: s };
+      }
+      return null;
+    }
+
+    // Trata pontos de milhar e vírgula decimal (ex.: 220.000 ou 6,5)
+    var cleaned = s;
+    if(cleaned.indexOf('.') >= 0 && cleaned.indexOf(',') >= 0){
+      cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+    } else if(cleaned.indexOf(',') >= 0){
+      cleaned = cleaned.replace(',', '.');
+    } else if(cleaned.indexOf('.') >= 0){
+      var partsDot = cleaned.split('.');
+      if(partsDot.length === 2 && partsDot[1].length === 3 && parseInt(partsDot[0], 10) > 10){
+        // Ex.: 220.000 -> 220000 (milhar sem vírgula)
+        cleaned = partsDot[0] + partsDot[1];
+      }
+    }
+
+    var num = parseFloat(cleaned);
+    return isNaN(num) ? null : { isBP: false, val: num, raw: s };
+  }
+
+  // Base farmacológica clínica revisada (RENAME / Atenção Básica e Especializada)
+  var MEDS_BASE = [
+    'Acebrofilina=5 mg/mL xarope adulto;25 mg/5 mL xarope infantil',
+    'Acetato de dexametasona=1 mg/g creme dermatológico',
+    'Acetato de hidrocortisona=10 mg/g creme dermatológico',
+    'Acetazolamida=250 mg comprimido',
+    'Acetilcisteína=20 mg/mL xarope infantil;40 mg/mL xarope adulto;100 mg;200 mg;600 mg granulado',
+    'Ácido acetilsalicílico (AAS)=100 mg comprimido;500 mg comprimido',
+    'Ácido fólico=5 mg comprimido;0,2 mg/mL gotas',
+    'Ácido valproico / Valproato de sódio=250 mg;500 mg comprimido;50 mg/mL xarope',
+    'Albendazol=400 mg comprimido mastigável;40 mg/mL suspensão oral',
+    'Alendronato de sódio=70 mg comprimido',
+    'Alopurinol=100 mg comprimido;300 mg comprimido',
+    'Alprazolam=0,25 mg;0,5 mg;1 mg;2 mg comprimido',
+    'Ambroxol=15 mg/5 mL xarope infantil;30 mg/5 mL xarope adulto',
+    'Amiodarona=200 mg comprimido',
+    'Amitriptilina=25 mg comprimido;75 mg comprimido',
+    'Amoxicilina=500 mg cápsula;250 mg/5 mL suspensão oral;500 mg/5 mL suspensão oral',
+    'Amoxicilina + clavulanato de potássio=500 mg + 125 mg comprimido;875 mg + 125 mg comprimido;250 mg + 62,5 mg/5 mL suspensão oral',
+    'Ampicilina=500 mg comprimido',
+    'Anastrozol=1 mg comprimido',
+    'Anlodipino (besilato)=5 mg comprimido;10 mg comprimido',
+    'Atenolol=25 mg comprimido;50 mg comprimido;100 mg comprimido',
+    'Atorvastatina=10 mg;20 mg;40 mg;80 mg comprimido',
+    'Azitromicina=500 mg comprimido;200 mg/5 mL suspensão oral',
+    'Baclofeno=10 mg comprimido',
+    'Beclometasona=50 mcg spray;200 mcg spray;250 mcg spray inalatório',
+    'Benzilpenicilina benzatina (Benzetacil)=600.000 UI injetável;1.200.000 UI injetável',
+    'Betametasona (dipropionato + fosfato dissódico)=5 mg/mL + 2 mg/mL injetável',
+    'Biperideno=2 mg comprimido',
+    'Brimonidina (tartarato)=0,2% colírio',
+    'Brimonidina + timolol=0,2% + 0,5% colírio',
+    'Budesonida=32 mcg spray nasal;64 mcg spray nasal;200 mcg pó inalatório;400 mcg pó inalatório;0,25 mg/mL suspensão para inalação',
+    'Buprenorfina=5 mg adesivo;10 mg adesivo',
+    'Bupropiona=150 mg comprimido de liberação prolongada',
+    'Butilbrometo de escopolamina (Buscopan)=10 mg comprimido;10 mg/mL gotas',
+    'Butilbrometo de escopolamina + dipirona=10 mg + 250 mg comprimido;6,67 mg/mL + 333,4 mg/mL gotas',
+    'Candesartana cilexetila=8 mg;16 mg;32 mg comprimido',
+    'Captopril=12,5 mg;25 mg;50 mg comprimido',
+    'Carbamazepina=200 mg;400 mg comprimido;20 mg/mL suspensão oral',
+    'Carbonato de cálcio + colecalciferol (Vit D3)=500 mg + 400 UI;600 mg + 400 UI',
+    'Carbonato de lítio=300 mg comprimido',
+    'Carvedilol=3,125 mg;6,25 mg;12,5 mg;25 mg comprimido',
+    'Cefalexina=500 mg cápsula;250 mg/5 mL suspensão oral',
+    'Ceftriaxona=500 mg injetável;1 g injetável',
+    'Cetoconazol=200 mg comprimido;20 mg/g creme;20 mg/g xampu',
+    'Cetoprofeno=50 mg cápsula;100 mg comprimido;20 mg/mL gotas',
+    'Cetorolaco de trometamol=10 mg sublingual;0,5% colírio',
+    'Cilostazol=50 mg;100 mg comprimido',
+    'Cinarizina=25 mg;75 mg comprimido',
+    'Ciprofloxacino=500 mg comprimido;0,3% colírio',
+    'Citalopram=20 mg comprimido',
+    'Claritromicina=500 mg comprimido;250 mg/5 mL suspensão oral',
+    'Clonazepam=0,5 mg;2 mg comprimido;2,5 mg/mL gotas',
+    'Clonidina=0,100 mg;0,150 mg;0,200 mg comprimido',
+    'Clopidogrel=75 mg comprimido',
+    'Cloridrato de dorzolamida=2% colírio',
+    'Clorpromazina=25 mg;100 mg comprimido;40 mg/mL gotas',
+    'Clortalidona=12,5 mg;25 mg;50 mg comprimido',
+    'Desloratadina=5 mg comprimido;0,5 mg/mL xarope',
+    'Dexametasona=4 mg comprimido;0,1 mg/mL elixir;0,1% colírio',
+    'Dexclorfeniramina (maleato)=2 mg comprimido;0,4 mg/mL solução oral',
+    'Diazepam=5 mg;10 mg comprimido',
+    'Diclofenaco sódico=50 mg comprimido;75 mg injetável',
+    'Diclofenaco potássico=50 mg comprimido;15 mg/mL gotas',
+    'Digoxina=0,25 mg comprimido',
+    'Diltiazem=30 mg;60 mg comprimido',
+    'Dipirona monoidratada=500 mg comprimido;1 g comprimido;500 mg/mL gotas',
+    'Disopiramida=100 mg;250 mg comprimido',
+    'Domperidona=10 mg comprimido;1 mg/mL suspensão oral',
+    'Doxazosina=2 mg;4 mg comprimido',
+    'Doxiciclina=100 mg comprimido',
+    'Duloxetina=30 mg;60 mg cápsula',
+    'Enalapril (maleato)=5 mg;10 mg;20 mg comprimido',
+    'Enoxaparina sódica=20 mg/0,2 mL;40 mg/0,4 mL;60 mg/0,6 mL;80 mg/0,8 mL injetável',
+    'Escitalopram=10 mg;15 mg;20 mg comprimido;20 mg/mL gotas',
+    'Espironolactona=25 mg;50 mg;100 mg comprimido',
+    'Ezetimiba=10 mg comprimido',
+    'Fenitoína=100 mg comprimido;20 mg/mL suspensão oral',
+    'Fenobarbital=100 mg comprimido;40 mg/mL gotas',
+    'Finasterida=1 mg;5 mg comprimido',
+    'Fluconazol=150 mg cápsula',
+    'Flunarizina=10 mg comprimido',
+    'Fluoxetina=20 mg cápsula ou comprimido',
+    'Fluticasona (propionato)=50 mcg spray;250 mcg spray inalatório',
+    'Furosemida=40 mg comprimido',
+    'Gabapentina=300 mg;400 mg cápsula',
+    'Glibenclamida=5 mg comprimido',
+    'Gliclazida=30 mg MR;60 mg MR comprimido',
+    'Glimepirida=1 mg;2 mg;4 mg comprimido',
+    'Haloperidol=1 mg;5 mg comprimido;2 mg/mL gotas',
+    'Hidroclorotiazida=12,5 mg;25 mg;50 mg comprimido',
+    'Ibuprofeno=300 mg;600 mg comprimido;50 mg/mL gotas;100 mg/mL gotas',
+    'Imipramina=25 mg comprimido',
+    'Indapamida=1,5 mg liberação prolongada;2,5 mg comprimido',
+    'Insulina Aspart=100 UI/mL solução injetável (ultrarrápida)',
+    'Insulina Glargina=100 UI/mL solução injetável (longa duração)',
+    'Insulina Lispro=100 UI/mL solução injetável (ultrarrápida)',
+    'Insulina NPH (humana)=100 UI/mL suspensão injetável',
+    'Insulina Regular (humana)=100 UI/mL solução injetável',
+    'Ipratrópio (brometo)=0,25 mg/mL solução para inalação',
+    'Isossorbida (dinitrato)=5 mg sublingual;10 mg comprimido',
+    'Isossorbida (mononitrato)=20 mg;40 mg comprimido',
+    'Ivabradina=5 mg;7,5 mg comprimido',
+    'Ivermectina=6 mg comprimido',
+    'Latanoprosta=0,005% colírio',
+    'Latanoprosta + timolol=0,005% + 0,5% colírio',
+    'Leflunomida=20 mg comprimido',
+    'Levetiracetam=250 mg;500 mg;750 mg comprimido;100 mg/mL solução oral',
+    'Levodopa + benserazida=100 mg + 25 mg;200 mg + 50 mg comprimido',
+    'Levodopa + carbidopa=250 mg + 25 mg;200 mg + 50 mg comprimido',
+    'Levofloxacino=500 mg;750 mg comprimido',
+    'Levomepromazina=25 mg;100 mg comprimido;4% gotas',
+    'Levotiroxina sódica=25 mcg;50 mcg;75 mcg;88 mcg;100 mcg;112 mcg;125 mcg;150 mcg comprimido',
+    'Lidocaína=2% geleia;5% pomada',
+    'Loratadina=10 mg comprimido;1 mg/mL xarope',
+    'Lorazepam=1 mg;2 mg comprimido',
+    'Losartana potássica=25 mg;50 mg;100 mg comprimido',
+    'Mebendazol=100 mg comprimido;20 mg/mL suspensão oral',
+    'Meloxicam=7,5 mg;15 mg comprimido',
+    'Metformina (cloridrato)=500 mg;850 mg;1000 mg comprimido;500 mg XR;750 mg XR',
+    'Metildopa=250 mg;500 mg comprimido',
+    'Metoclopramida=10 mg comprimido;4 mg/mL gotas',
+    'Metoprolol (succinato)=25 mg;50 mg;100 mg liberação prolongada',
+    'Metoprolol (tartarato)=50 mg;100 mg comprimido',
+    'Metronidazol=250 mg;400 mg comprimido;100 mg/g gel vaginal',
+    'Miconazol (nitrato)=2% creme dermatológico;2% creme vaginal',
+    'Mirtazapina=15 mg;30 mg;45 mg comprimido',
+    'Montelucaste de sódio=4 mg mastigável;5 mg mastigável;10 mg comprimido',
+    'Morfina (sulfato)=10 mg;30 mg comprimido;10 mg/mL solução oral',
+    'Naproxeno=250 mg;500 mg comprimido',
+    'Neomicina + bacitracina=5 mg/g + 250 UI/g pomada',
+    'Nifedipino=10 mg;20 mg comprimido;30 mg retard;60 mg retard',
+    'Nimesulida=100 mg comprimido;50 mg/mL gotas',
+    'Nistatina=100.000 UI/mL suspensão oral;25.000 UI/g creme vaginal',
+    'Nitrofurantoína=100 mg cápsula',
+    'Nortriptilina=10 mg;25 mg;50 mg;75 mg cápsula',
+    'Omeprazol=10 mg;20 mg;40 mg cápsula',
+    'Ondansetrona=4 mg;8 mg comprimido',
+    'Oxcarbazepina=300 mg;600 mg comprimido;60 mg/mL suspensão oral',
+    'Pantoprazol=20 mg;40 mg comprimido',
+    'Paracetamol=500 mg;750 mg comprimido;200 mg/mL gotas',
+    'Paracetamol + fosfato de codeína=500 mg + 7,5 mg;500 mg + 30 mg comprimido',
+    'Paroxetina=15 mg;20 mg;25 mg comprimido',
+    'Permetrina=1% loção;5% loção',
+    'Pilocarpina=2% colírio',
+    'Pioglitazona=15 mg;30 mg comprimido',
+    'Prednisolona=3 mg/mL solução oral',
+    'Prednisona=5 mg;20 mg comprimido',
+    'Pregabalina=50 mg;75 mg;150 mg cápsula',
+    'Prometazina=25 mg comprimido',
+    'Propafenona=300 mg comprimido',
+    'Propranolol=10 mg;40 mg;80 mg comprimido',
+    'Quetiapina (hemifumarato)=25 mg;100 mg;200 mg;300 mg comprimido',
+    'Ramipril=2,5 mg;5 mg;10 mg comprimido',
+    'Risedronato sódico=35 mg comprimido',
+    'Risperidona=1 mg;2 mg;3 mg comprimido;1 mg/mL solução oral',
+    'Rivaroxabana=10 mg;15 mg;20 mg comprimido',
+    'Rosuvastatina=5 mg;10 mg;20 mg;40 mg comprimido',
+    'Salbutamol (sulfato)=100 mcg/dose spray aerosol;0,4 mg/mL xarope',
+    'Sertralina=25 mg;50 mg;100 mg comprimido',
+    'Simeticona=40 mg comprimido;75 mg/mL gotas',
+    'Sinvastatina=10 mg;20 mg;40 mg comprimido',
+    'Sulfadiazina de prata=1% creme',
+    'Sulfametoxazol + trimetoprima=400 mg + 80 mg;800 mg + 160 mg comprimido;200 mg + 40 mg/5 mL suspensão oral',
+    'Sulfato ferroso=40 mg ferro elementar comprimido;25 mg/mL gotas',
+    'Tamoxifeno=10 mg;20 mg comprimido',
+    'Tamsulosina=0,4 mg cápsula',
+    'Tiamina (Vitamina B1)=300 mg comprimido',
+    'Timolol (maleato)=0,25%;0,5% colírio',
+    'Tiotrópio=2,5 mcg solução para inalação',
+    'Tizanidina=2 mg comprimido',
+    'Topiramato=25 mg;50 mg;100 mg comprimido',
+    'Tramadol=50 mg cápsula;100 mg comprimido;50 mg/mL gotas',
+    'Trazodona=50 mg;100 mg;150 mg comprimido',
+    'Triancinolona acetonida=1 mg/g pasta oral',
+    'Valsartana=80 mg;160 mg;320 mg comprimido',
+    'Venlafaxina=37,5 mg;75 mg;150 mg cápsula de liberação prolongada',
+    'Verapamil=80 mg;120 mg comprimido',
+    'Vildagliptina=50 mg comprimido',
+    'Vildagliptina + metformina=50 mg + 850 mg;50 mg + 1000 mg comprimido',
+    'Vitamina D3 (colecalciferol)=1.000 UI;7.000 UI;10.000 UI;50.000 UI;200 UI/gota',
+    'Varfarina sódica=1 mg;5 mg comprimido',
+    'Zolpidem=5 mg;10 mg comprimido'
+  ];
+
+  var EXAMS_BASE = [
+    'Hemoglobina glicada (HbA1c)=%;abaixo de 5,7%',
+    'Glicemia de jejum=mg/dL;70 a 99 mg/dL',
+    'Pressão Arterial=mmHg;abaixo de 120/80',
+    'Colesterol Total=mg/dL;inferior a 190 mg/dL',
+    'Colesterol HDL=mg/dL;superior a 40 mg/dL',
+    'Colesterol LDL=mg/dL;inferior a 130 mg/dL',
+    'Triglicerídeos=mg/dL;inferior a 150 mg/dL',
+    'Creatinina=mg/dL;0,6 a 1,2 mg/dL',
+    'Taxa de Filtração Glomerular (eTFG)=mL/min/1,73m²;superior a 60',
+    'Ureia=mg/dL;15 a 45 mg/dL',
+    'Ácido Úrico=mg/dL;3,0 a 7,0 mg/dL',
+    'Potássio=mEq/L;3,5 a 5,0 mEq/L',
+    'Sódio=mEq/L;135 a 145 mEq/L',
+    'TSH=mUI/L;0,4 a 4,5 mUI/L',
+    'T4 Livre=ng/dL;0,8 a 1,8 ng/dL',
+    'Hemoglobina (Hemograma)=g/dL;12 a 16 g/dL',
+    'Plaquetas (Hemograma)=/mm³;150.000 a 450.000',
+    'Leucócitos (Hemograma)=/mm³;4.000 a 11.000',
+    'Vitamina D (25-OH)=ng/mL;20 a 60 ng/mL',
+    'Vitamina B12=pg/mL;200 a 900 pg/mL',
+    'Ferritina=ng/mL;30 a 300 ng/mL',
+    'TGO (AST)=U/L;inferior a 40 U/L',
+    'TGP (ALT)=U/L;inferior a 40 U/L',
+    'Gama GT=U/L;inferior a 50 U/L',
+    'Fosfatase Alcalina=U/L;40 a 130 U/L',
+    'Bilirrubina Total=mg/dL;até 1,2 mg/dL',
+    'Microalbuminúria=mg/g;inferior a 30 mg/g',
+    'PSA Total=ng/mL;inferior a 4,0 ng/mL',
+    'EAS (Urina Tipo 1)=;',
+    'Urocultura=;'
+  ];
+
+  var PARSED_MEDS = MEDS_BASE.map(function(l){
+    var parts = l.split('=');
+    return { n: parts[0].trim(), p: parts[1] ? parts[1].split(';') : [], k: norm(parts[0].trim()), custom: false };
+  });
+
+  var PARSED_EXAMS = EXAMS_BASE.map(function(l){
+    var parts = l.split('=');
+    var meta = parts[1] ? parts[1].split(';') : ['', ''];
+    return { n: parts[0].trim(), u: meta[0] || '', r: meta[1] || '', k: norm(parts[0].trim()), custom: false };
+  });
+
+  function getCombinedMeds(){
+    var res = PARSED_MEDS.slice();
+    (db.customMeds || []).forEach(function(cName){
+      var kn = norm(cName);
+      if(!res.some(function(i){ return i.k === kn; })){
+        res.push({ n: cName, p: [], k: kn, custom: true });
+      }
+    });
+    return res;
+  }
+
+  function getCombinedExams(){
+    var res = PARSED_EXAMS.slice();
+    (db.customExams || []).forEach(function(cName){
+      var kn = norm(cName);
+      if(!res.some(function(i){ return i.k === kn; })){
+        res.push({ n: cName, u: '', r: '', k: kn, custom: true });
+      }
+    });
+    return res;
+  }
+
+  function registerMedName(name){
+    if(!name) return;
+    var clean = name.trim();
+    var kn = norm(clean);
+    var all = getCombinedMeds();
+    if(!all.some(function(i){ return i.k === kn; })){
+      if(!db.customMeds) db.customMeds = [];
+      db.customMeds.push(clean);
+      save();
+    }
+  }
+
+  function registerExamName(name){
+    if(!name) return;
+    var clean = name.trim();
+    var kn = norm(clean);
+    var all = getCombinedExams();
+    if(!all.some(function(i){ return i.k === kn; })){
+      if(!db.customExams) db.customExams = [];
+      db.customExams.push(clean);
+      save();
+    }
+  }
+
+  // Hook com ordenação por 'startsWith' e evento de clique suave
+  function setupAutocomplete(inputEl, getItemsFn, onSelectFn){
+    var wrap = el('div', 'input-wrap');
+    inputEl.parentNode.insertBefore(wrap, inputEl);
+    wrap.appendChild(inputEl);
+
+    var sugBox = el('div', 'sug');
+    sugBox.hidden = true;
+    wrap.appendChild(sugBox);
+
+    function hide(){
+      sugBox.hidden = true;
+      sugBox.innerHTML = '';
+    }
+
+    inputEl.addEventListener('input', function(){
+      var val = norm(inputEl.value);
+      sugBox.innerHTML = '';
+      if(val.length < 2){
+        hide();
+        return;
+      }
+
+      var all = getItemsFn();
+      var starts = all.filter(function(i){ return i.k.indexOf(val) === 0; });
+      var contains = all.filter(function(i){ return i.k.indexOf(val) > 0; });
+      var hit = starts.concat(contains).slice(0, 8);
+
+      if(!hit.length){
+        hide();
+        return;
+      }
+
+      sugBox.hidden = false;
+      hit.forEach(function(it){
+        var btn = el('button');
+        btn.type = 'button';
+        btn.appendChild(el('span', '', it.n));
+        if(it.custom){
+          btn.appendChild(el('span', 'custom-tag', 'Salvo'));
+        }
+        btn.onclick = function(e){
+          e.preventDefault();
+          inputEl.value = it.n;
+          hide();
+          if(onSelectFn) onSelectFn(it);
+        };
+        sugBox.appendChild(btn);
+      });
+    });
+
+    inputEl.addEventListener('blur', function(){
+      setTimeout(hide, 250);
+    });
+  }
+
+  function medHook(ins){
+    var ni = ins.n, di = ins.dose, pr = el('div', 'pres');
+    di.parentNode.appendChild(pr);
+
+    function showPres(it){
+      pr.innerHTML = '';
+      if(!it || !it.p || !it.p.length) return;
+      it.p.forEach(function(doseText){
+        var b = el('button', '', doseText);
+        b.type = 'button';
+        b.onclick = function(e){
+          e.preventDefault();
+          di.value = doseText;
+        };
+        pr.appendChild(b);
+      });
+      var n = el('div', 'note', 'Apresentações clínicas frequentes (RENAME). Confira sempre com a prescrição médica.');
+      n.style.flexBasis = '100%';
+      pr.appendChild(n);
+    }
+
+    setupAutocomplete(ni, getCombinedMeds, function(item){
+      showPres(item);
+    });
+
+    var curMatch = getCombinedMeds().filter(function(i){ return i.k === norm(ni.value); })[0];
+    showPres(curMatch);
+  }
+
+  function examHook(ins){
+    var ni = ins.n, ui = ins.u, ri = ins.r;
+    setupAutocomplete(ni, getCombinedExams, function(item){
+      if(item.u && !ui.value) ui.value = item.u;
+      if(item.r && !ri.value) ri.value = item.r;
+    });
+  }
+
+  function form(title, fields, vals, onSave, onDel, delTxt, hook){
+    var s = $('sheet');
+    s.innerHTML = '';
+    s.appendChild(el('h2', '', title));
+    var ins = {};
+
+    fields.forEach(function(f){
+      var l = el('label', '', f.l + (f.req ? ' *' : '')), i;
+      if(f.t === 'area'){
+        i = el('textarea');
+        i.rows = 3;
+      } else if(f.t === 'sel'){
+        i = el('select');
+        f.o.forEach(function(o){
+          var op = el('option', '', o[1]);
+          op.value = o[0];
+          i.appendChild(op);
+        });
+      } else {
+        i = el('input');
+        i.type = f.t || 'text';
+      }
+      if(f.p) i.placeholder = f.p;
+      i.value = (vals && vals[f.k] != null) ? vals[f.k] : (f.d || '');
+      ins[f.k] = i;
+      l.appendChild(i);
+      s.appendChild(l);
+    });
+
+    if(hook) hook(ins);
+
+    var err = el('div', 'err');
+    s.appendChild(err);
+
+    var row = el('div', 'row');
+    var c = el('button', 'sec', 'Cancelar');
+    var ok = el('button', 'pri', 'Salvar');
+    c.onclick = function(){ closeM(); };
+    ok.onclick = function(){
+      var o = {};
+      for(var i = 0; i < fields.length; i++){
+        var f = fields[i];
+        o[f.k] = ins[f.k].value.trim();
+        if(f.req && !o[f.k]){
+          err.textContent = 'Preencha o campo obrigatório: ' + f.l;
+          ins[f.k].focus();
+          return;
+        }
+      }
+      var res = onSave(o, err);
+      if(res === false) return;
+      closeM();
+      save();
+      render();
+    };
+    row.appendChild(c);
+    row.appendChild(ok);
+    s.appendChild(row);
+
+    if(onDel){
+      var d = el('button', 'del', 'Excluir');
+      var confirmed = false;
+      d.onclick = function(){
+        if(!confirmed){
+          confirmed = true;
+          d.textContent = delTxt || 'Toque novamente para confirmar a exclusão';
+          return;
+        }
+        onDel();
+        closeM();
+        save();
+        render();
+      };
+      s.appendChild(d);
+    }
+
+    openM();
+  }
+
+  function editMember(m){
+    var idx = m ? db.m.indexOf(m) : -1;
+    form(m ? 'Editar familiar' : 'Novo familiar',
+      [
+        {k:'name', l:'Nome do familiar', req:1, p:'Ex.: Mãe'},
+        {k:'o', l:'Alergias e observações clínicas permanentes', t:'area', p:'Ex.: Alergia severa a penicilinas e AINEs'}
+      ],
+      m,
+      function(o){
+        if(m){
+          m.name = o.name;
+          m.o = o.o;
+        } else {
+          var n = { id: uid(), name: o.name, o: o.o };
+          db.m.push(n);
+          db.sel = n.id;
+          tab = 'd';
+        }
+      },
+      m ? function(){
+        db.d = db.d.filter(function(x){ return x.mid !== m.id; });
+        db.x = db.x.filter(function(x){ return x.mid !== m.id; });
+        db.m = db.m.filter(function(x){ return x.id !== m.id; });
+        db.sel = db.m.length ? db.m[0].id : null;
+      } : null,
+      'Excluir familiar e todo o histórico: confirmar',
+      function(ins){
+        if(m && db.m.length > 1){
+          var reorderBox = el('div');
+          reorderBox.style.marginTop = '14px';
+          reorderBox.appendChild(el('label', '', 'Posição na barra superior:'));
+          var rowMv = el('div', 'row');
+          var btnL = el('button', 'sec', '◀ Mover para o início');
+          btnL.disabled = idx === 0;
+          btnL.onclick = function(){
+            var tmp = db.m.splice(idx, 1)[0];
+            db.m.splice(idx - 1, 0, tmp);
+            save(); closeM(); render();
+          };
+          var btnR = el('button', 'sec', 'Mover para o fim ▶');
+          btnR.disabled = idx === db.m.length - 1;
+          btnR.onclick = function(){
+            var tmp = db.m.splice(idx, 1)[0];
+            db.m.splice(idx + 1, 0, tmp);
+            save(); closeM(); render();
+          };
+          rowMv.appendChild(btnL);
+          rowMv.appendChild(btnR);
+          reorderBox.appendChild(rowMv);
+          ins.name.parentNode.appendChild(reorderBox);
+        }
+      }
+    );
+  }
+
+  function editMed(x){
+    var m = cur();
+    form(x ? 'Editar medicamento' : 'Novo medicamento',
+      [
+        {k:'n', l:'Medicamento', req:1, p:'Ex.: Losartana potássica'},
+        {k:'dose', l:'Dose e concentração', p:'Ex.: 50 mg'},
+        {k:'f', l:'Posologia (como toma)', p:'Ex.: 1 comprimido pela manhã'},
+        {k:'doc', l:'Médico prescritor (opcional)', p:'Ex.: Dr. Silva'},
+        {k:'spec', l:'Especialidade (opcional)', p:'Ex.: Cardiologia'},
+        {k:'s', l:'Data de início (opcional)', t:'date'},
+        {k:'st', l:'Situação do uso', t:'sel', o:[['on','Em uso contínuo/atual'],['off','Suspenso / Histórico']], d:'on'},
+        {k:'o', l:'Observações adicionais', t:'area'}
+      ],
+      x,
+      function(o, errEl){
+        var kn = norm(o.n);
+        var isDuplicate = db.d.some(function(d){
+          return d.mid === m.id && d.st === 'on' && norm(d.n) === kn && (!x || d.id !== x.id);
+        });
+
+        if(o.st === 'on' && isDuplicate){
+          if(!confirm('Atenção: "' + o.n + '" já consta como "Em uso" para ' + m.name + '.\n\nDeseja adicionar mesmo assim (ex: dosagens em horários diferentes)?')){
+            errEl.textContent = 'Inclusão cancelada para evitar duplicidade.';
+            return false;
+          }
+        }
+
+        registerMedName(o.n);
+        if(x){
+          for(var k in o) x[k] = o[k];
+        } else {
+          o.id = uid();
+          o.mid = m.id;
+          db.d.push(o);
+        }
+      },
+      x ? function(){ db.d = db.d.filter(function(y){ return y !== x; }); } : null,
+      undefined,
+      medHook
+    );
+  }
+
+  function editExam(x){
+    var m = cur();
+    form(x ? 'Editar exame' : 'Novo resultado de exame',
+      [
+        {k:'n', l:'Nome do exame', req:1, p:'Ex.: Hemoglobina glicada (HbA1c)'},
+        {k:'dt', l:'Data da coleta / realização', t:'date', req:1, d:today()},
+        {k:'v', l:'Resultado', req:1, p:'Ex.: 6,2 ou 120/80'},
+        {k:'u', l:'Unidade de medida', p:'Ex.: % ou mg/dL'},
+        {k:'r', l:'Valor de referência do laudo', p:'Ex.: inferior a 5,7%'},
+        {k:'o', l:'Observações adicionais', t:'area'}
+      ],
+      x,
+      function(o){
+        registerExamName(o.n);
+        if(x){
+          for(var k in o) x[k] = o[k];
+        } else {
+          o.id = uid();
+          o.mid = m.id;
+          db.x.push(o);
+        }
+      },
+      x ? function(){ db.x = db.x.filter(function(y){ return y !== x; }); } : null,
+      undefined,
+      examHook
+    );
+  }
+
+  function card(t, s, extra, docInfo, fn, off, mv){
+    var c = el('div', 'card crow' + (off ? ' off' : ''));
+    var g = el('div', 'grow');
+    g.appendChild(el('b', '', t));
+    if(s) g.appendChild(el('div', 's', s));
+    if(extra) g.appendChild(el('div', 's', extra));
+    if(docInfo) g.appendChild(el('div', 'doc', docInfo));
+    c.appendChild(g);
+
+    if(mv){
+      var w = el('div', 'mv');
+      var u = el('button', '', '▲');
+      var d = el('button', '', '▼');
+      u.disabled = mv.f;
+      d.disabled = mv.l;
+      u.setAttribute('aria-label', 'Subir ordem');
+      d.setAttribute('aria-label', 'Descer ordem');
+      u.onclick = function(e){ e.stopPropagation(); mv.up(); };
+      d.onclick = function(e){ e.stopPropagation(); mv.dn(); };
+      w.appendChild(u);
+      w.appendChild(d);
+      c.appendChild(w);
+    }
+
+    c.onclick = fn;
+    return c;
+  }
+
+  function byDate(a, b){ return a.dt < b.dt ? 1 : a.dt > b.dt ? -1 : 0; }
+  var xs = 'dd';
+  function xcmp(a, b){
+    var d = (a.dt < b.dt ? -1 : a.dt > b.dt ? 1 : 0);
+    var n = a.n.localeCompare(b.n);
+    return xs === 'dd' ? (-d || n) : xs === 'da' ? (d || n) : xs === 'na' ? (n || -d) : (-n || -d);
+  }
+
+  function summary(m){
+    var L = ['FAMILIAR: ' + m.name];
+    if(m.o) L.push('Alergias e Observações: ' + m.o);
+    L.push('', '--- MEDICAMENTOS EM USO CONTÍNUO ---');
+    var on = db.d.filter(function(x){ return x.mid === m.id && x.st === 'on'; });
+    if(!on.length) L.push('- Nenhum medicamento cadastrado em uso.');
+    on.forEach(function(x){
+      var doc = [x.doc, x.spec].filter(Boolean).join(' - ');
+      L.push('• ' + [x.n, x.dose, x.f].filter(Boolean).join(' — ') + (x.s ? ' (início em ' + fd(x.s) + ')' : '') + (doc ? ' [' + doc + ']' : ''));
+    });
+
+    L.push('', '--- EXAMES RECENTES (ÚLTIMO LAUDO REGISTRADO) ---');
+    var seen = {}, count = 0;
+    db.x.filter(function(x){ return x.mid === m.id; }).sort(byDate).forEach(function(x){
+      var kn = norm(x.n);
+      if(seen[kn]) return;
+      seen[kn] = 1;
+      count++;
+      L.push('• ' + x.n + ': ' + x.v + (x.u ? ' ' + x.u : '') + (x.r ? ' (Ref.: ' + x.r + ')' : '') + ' — ' + fd(x.dt));
+    });
+    if(!count) L.push('- Nenhum exame registrado.');
+
+    L.push('', 'Relatório gerado em ' + fd(today()) + ' via app Saúde da Família.');
+    return L.join('\n');
+  }
+
+  function renderChart(m, examName){
+    var list = db.x.filter(function(x){
+      return x.mid === m.id && norm(x.n) === norm(examName);
+    }).sort(function(a, b){ return a.dt > b.dt ? 1 : a.dt < b.dt ? -1 : 0; });
+
+    var valid = [];
+    var hasBP = false;
+
+    list.forEach(function(item){
+      var parsed = parseVal(item.v);
+      if(parsed){
+        if(parsed.isBP) hasBP = true;
+        valid.push({ dt: item.dt, p: parsed, orig: item });
+      }
+    });
+
+    var box = el('div', 'chart-card');
+    var tHead = el('div', 'chart-title');
+    tHead.appendChild(el('span', '', '📈 ' + examName));
+
+    var closeBtn = el('button', 'link', 'Fechar gráfico');
+    closeBtn.onclick = function(){ selectedExamName = ''; render(); };
+    tHead.appendChild(closeBtn);
+    box.appendChild(tHead);
+
+    if(valid.length < 2){
+      box.appendChild(el('div', 'note', 'São necessários no mínimo 2 resultados numéricos em datas distintas para traçar a linha de evolução.'));
+      return box;
+    }
+
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "chart-svg");
+    svg.setAttribute("viewBox", "0 0 320 160");
+
+    var minV = Infinity, maxV = -Infinity;
+    valid.forEach(function(pt){
+      if(pt.p.isBP){
+        if(pt.p.sis > maxV) maxV = pt.p.sis;
+        if(pt.p.dia < minV) minV = pt.p.dia;
+      } else {
+        if(pt.p.val > maxV) maxV = pt.p.val;
+        if(pt.p.val < minV) minV = pt.p.val;
+      }
+    });
+
+    if(minV === maxV){ minV -= 1; maxV += 1; }
+    var pad = (maxV - minV) * 0.15;
+    minV -= pad; maxV += pad;
+
+    var W = 270, H = 100, xOff = 25, yOff = 20;
+
+    for(var bgL = 0; bgL <= 2; bgL++){
+      var ly = yOff + (H / 2) * bgL;
+      var line = document.createElementNS(svgNS, "line");
+      line.setAttribute("x1", xOff);
+      line.setAttribute("y1", ly);
+      line.setAttribute("x2", xOff + W);
+      line.setAttribute("y2", ly);
+      line.setAttribute("stroke", "var(--line)");
+      line.setAttribute("stroke-dasharray", "3,3");
+      svg.appendChild(line);
+    }
+
+    function getY(val){
+      return yOff + H - ((val - minV) / (maxV - minV)) * H;
+    }
+
+    function drawLine(pointsData, color){
+      var d = pointsData.map(function(c, i){ return (i === 0 ? 'M' : 'L') + c.x + ',' + c.y; }).join(' ');
+      var path = document.createElementNS(svgNS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", color);
+      path.setAttribute("stroke-width", "2.5");
+      svg.appendChild(path);
+
+      pointsData.forEach(function(c){
+        var circ = document.createElementNS(svgNS, "circle");
+        circ.setAttribute("cx", c.x);
+        circ.setAttribute("cy", c.y);
+        circ.setAttribute("r", "4.5");
+        circ.setAttribute("fill", color);
+        svg.appendChild(circ);
+
+        var tv = document.createElementNS(svgNS, "text");
+        tv.setAttribute("x", c.x);
+        tv.setAttribute("y", c.y - 7);
+        tv.setAttribute("text-anchor", "middle");
+        tv.setAttribute("font-size", "10");
+        tv.setAttribute("font-weight", "600");
+        tv.setAttribute("fill", "var(--text)");
+        tv.textContent = c.v;
+        svg.appendChild(tv);
+      });
+    }
+
+    if(hasBP){
+      var pSis = valid.map(function(pt, i){
+        return {
+          x: xOff + (i / (valid.length - 1)) * W,
+          y: getY(pt.p.sis),
+          v: pt.p.sis,
+          dt: pt.dt
+        };
+      });
+      var pDia = valid.map(function(pt, i){
+        return {
+          x: xOff + (i / (valid.length - 1)) * W,
+          y: getY(pt.p.dia),
+          v: pt.p.dia,
+          dt: pt.dt
+        };
+      });
+      drawLine(pSis, 'var(--bad)');
+      drawLine(pDia, 'var(--ac)');
+      pSis.forEach(function(c){
+        var td = document.createElementNS(svgNS, "text");
+        td.setAttribute("x", c.x);
+        td.setAttribute("y", yOff + H + 18);
+        td.setAttribute("text-anchor", "middle");
+        td.setAttribute("font-size", "9");
+        td.setAttribute("fill", "var(--muted)");
+        td.textContent = fd(c.dt).slice(0, 5);
+        svg.appendChild(td);
+      });
+    } else {
+      var pts = valid.map(function(pt, i){
+        return {
+          x: xOff + (i / (valid.length - 1)) * W,
+          y: getY(pt.p.val),
+          v: pt.p.raw,
+          dt: pt.dt
+        };
+      });
+      drawLine(pts, 'var(--ac)');
+      pts.forEach(function(c){
+        var td = document.createElementNS(svgNS, "text");
+        td.setAttribute("x", c.x);
+        td.setAttribute("y", yOff + H + 18);
+        td.setAttribute("text-anchor", "middle");
+        td.setAttribute("font-size", "9");
+        td.setAttribute("fill", "var(--muted)");
+        td.textContent = fd(c.dt).slice(0, 5);
+        svg.appendChild(td);
+      });
+    }
+
+    box.appendChild(svg);
+    return box;
+  }
+
+  function checkBackupAlert(){
+    var alertBox = $('appBanner');
+    alertBox.innerHTML = '';
+    var last = db.lastBackup || 0;
+    var days = (Date.now() - last) / (1000 * 60 * 60 * 24);
+
+    if(days > 30){
+      var warn = el('div', 'banner');
+      warn.appendChild(el('span', '', '⚠️ Lembrete: Faz mais de 30 dias que você não exporta um backup seguro.'));
+      var b = el('button', '', 'Exportar');
+      b.onclick = settings;
+      warn.appendChild(b);
+      alertBox.appendChild(warn);
+    }
+  }
+
+  function manageCustomItems(type){
+    var s = $('sheet');
+    s.innerHTML = '';
+    var isMed = type === 'med';
+    var key = isMed ? 'customMeds' : 'customExams';
+    var title = isMed ? '💊 Gerenciar Remédios Salvos' : '🧪 Gerenciar Exames Salvos';
+
+    s.appendChild(el('h2', '', title));
+    s.appendChild(el('p', 'note', 'Edite a grafia de itens digitados com erro ou exclua-os para não poluir o autocompletar.'));
+
+    var wrap = el('div');
+    wrap.style.maxHeight = '280px';
+    wrap.style.overflowY = 'auto';
+    wrap.style.marginTop = '10px';
+
+    var list = db[key] || [];
+    if(!list.length){
+      wrap.appendChild(el('div', 'empty', 'Nenhum item personalizado registrado.'));
+    } else {
+      list.forEach(function(name, idx){
+        var r = el('div', 'custom-med-item');
+        r.appendChild(el('span', '', name));
+
+        var actions = el('div');
+        var bEdit = el('button', 'link', 'Editar');
+        bEdit.onclick = function(){
+          var nName = prompt('Corrigir nome do item:', name);
+          if(nName && nName.trim()){
+            db[key][idx] = nName.trim();
+            save();
+            manageCustomItems(type);
+          }
+        };
+
+        var bDel = el('button', 'link', 'Excluir');
+        bDel.style.color = 'var(--bad)';
+        bDel.style.marginLeft = '8px';
+        bDel.onclick = function(){
+          if(confirm('Excluir "' + name + '" do seu acervo de sugestões?')){
+            db[key].splice(idx, 1);
+            save();
+            manageCustomItems(type);
+          }
+        };
+
+        actions.appendChild(bEdit);
+        actions.appendChild(bDel);
+        r.appendChild(actions);
+        wrap.appendChild(r);
+      });
+    }
+
+    s.appendChild(wrap);
+    var bBack = el('button', 'pri', 'Voltar');
+    bBack.style.marginTop = '16px';
+    bBack.onclick = settings;
+    s.appendChild(bBack);
+  }
+
+  function settings(){
+    var s = $('sheet');
+    s.innerHTML = '';
+    s.appendChild(el('h2', '', '⚙️ Configurações & Segurança'));
+
+    // Tamanho da fonte para acessibilidade
+    var secFont = el('div');
+    secFont.appendChild(el('h3', '', 'Acessibilidade (Tamanho do Texto)'));
+    var selFont = el('select');
+    [
+      ['normal', 'Texto Padrão (16px)'],
+      ['large', 'Texto Grande (18px)'],
+      ['xlarge', 'Texto Extragrande (20px)']
+    ].forEach(function(o){
+      var opt = el('option', '', o[1]);
+      opt.value = o[0];
+      selFont.appendChild(opt);
+    });
+    selFont.value = db.fontSize || 'normal';
+    selFont.onchange = function(){
+      db.fontSize = selFont.value;
+      document.documentElement.setAttribute('data-font', db.fontSize);
+      save();
+    };
+    secFont.appendChild(selFont);
+    s.appendChild(secFont);
+
+    // Proteção por PIN opcional
+    var secPin = el('div');
+    secPin.appendChild(el('h3', '', 'Privacidade (Proteção por PIN)'));
+    var pInfo = el('p', 'note', db.pin ? '🔒 O app está protegido por um PIN de 4 dígitos.' : 'O app está sem senha. Defina um PIN para impedir acesso de terceiros neste aparelho.');
+    secPin.appendChild(pInfo);
+
+    var bPin = el('button', 'sec', db.pin ? 'Alterar ou Remover PIN' : 'Ativar Proteção por PIN');
+    bPin.onclick = function(){
+      if(db.pin){
+        var cur = prompt('Digite o PIN atual de 4 dígitos:');
+        if(cur !== db.pin){
+          alert('PIN incorreto!');
+          return;
+        }
+        if(confirm('Deseja desativar o PIN?')){
+          delete db.pin;
+          save();
+          settings();
+          return;
+        }
+      }
+      var nPin = prompt('Digite um novo PIN de 4 dígitos (somente números):');
+      if(nPin && /^\d{4}$/.test(nPin.trim())){
+        db.pin = nPin.trim();
+        save();
+        toast('PIN configurado com sucesso!');
+        settings();
+      } else if(nPin) {
+        alert('O PIN deve conter exatamente 4 dígitos numéricos.');
+      }
+    };
+    secPin.appendChild(bPin);
+    s.appendChild(secPin);
+
+    // Backup e Compartilhamento
+    var secBackup = el('div');
+    secBackup.appendChild(el('h3', '', 'Backup & Restauração'));
+    secBackup.appendChild(el('p', 'note', '⚠️ O arquivo de backup contém informações de saúde descriptografadas. Guarde-o em local seguro (seu Google Drive pessoal, pasta protegida ou e-mail pessoal).'));
+
+    var r1 = el('div', 'row');
+    var bShare = el('button', 'pri', '📤 Compartilhar / Salvar');
+    bShare.onclick = function(){
+      db.lastBackup = Date.now();
+      save();
+      var json = JSON.stringify(db, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var file = new File([blob], 'saude_familia_' + today() + '.json', { type: 'application/json' });
+
+      if(navigator.canShare && navigator.canShare({ files: [file] })){
+        navigator.share({
+          files: [file],
+          title: 'Backup Saúde da Família',
+          text: 'Backup dos meus registros de saúde.'
+        }).catch(function(){});
+      } else {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'saude_familia_' + today() + '.json';
+        a.click();
+        toast('Arquivo baixado para a pasta de downloads.');
+      }
+    };
+
+    var bCopyText = el('button', 'sec', '📋 Copiar Texto');
+    bCopyText.onclick = function(){
+      db.lastBackup = Date.now();
+      save();
+      copy(JSON.stringify(db, null, 2));
+    };
+
+    r1.appendChild(bShare);
+    r1.appendChild(bCopyText);
+    secBackup.appendChild(r1);
+
+    var r2 = el('div', 'row');
+    var bImpFile = el('button', 'sec', '📂 Abrir Arquivo');
+    var fileIn = el('input');
+    fileIn.type = 'file';
+    fileIn.accept = '.json,application/json';
+    fileIn.style.display = 'none';
+    fileIn.onchange = function(e){
+      var f = e.target.files[0];
+      if(!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt){
+        try {
+          var o = JSON.parse(evt.target.result);
+          processRestore(o);
+        } catch(err){
+          alert('Arquivo inválido: JSON corrompido.');
+        }
+      };
+      reader.readAsText(f);
+    };
+    bImpFile.onclick = function(){ fileIn.click(); };
+
+    var bImpText = el('button', 'sec', '📝 Colar Texto');
+    bImpText.onclick = function(){
+      s.innerHTML = '';
+      s.appendChild(el('h2', '', 'Restaurar de Texto JSON'));
+      s.appendChild(el('p', 'note', 'Cole o conteúdo completo do backup abaixo:'));
+      var ta = el('textarea');
+      ta.rows = 8;
+      s.appendChild(ta);
+
+      var rowSub = el('div', 'row');
+      var bCanc = el('button', 'sec', 'Cancelar');
+      bCanc.onclick = settings;
+      var bOk = el('button', 'pri', 'Restaurar');
+      bOk.onclick = function(){
+        try {
+          var parsed = JSON.parse(ta.value.trim());
+          processRestore(parsed);
+        } catch(err){
+          alert('O texto colado não é um JSON válido.');
+        }
+      };
+      rowSub.appendChild(bCanc);
+      rowSub.appendChild(bOk);
+      s.appendChild(rowSub);
+    };
+
+    r2.appendChild(bImpFile);
+    r2.appendChild(bImpText);
+    secBackup.appendChild(r2);
+
+    // Restauração Prévia e Snapshots Diários
+    var preRest = localStorage.getItem(PRE_RESTORE_KEY);
+    var metaStr = localStorage.getItem(SNAP_DATES);
+    var meta = metaStr ? JSON.parse(metaStr) : null;
+
+    if(preRest || (meta && (meta.s1 || meta.s2))){
+      secBackup.appendChild(el('h3', '', 'Pontos de Segurança Automáticos'));
+
+      if(preRest){
+        var bPre = el('button', 'sec', 'Desfazer Última Restauração');
+        bPre.style.marginTop = '6px';
+        bPre.onclick = function(){
+          if(confirm('Deseja recuperar o estado anterior à última restauração?')){
+            processRestore(JSON.parse(preRest));
+          }
+        };
+        secBackup.appendChild(bPre);
+      }
+
+      if(meta && meta.s1 && localStorage.getItem(SNAP_1)){
+        var bS1 = el('button', 'sec', 'Restaurar Cópia de ' + fd(meta.s1));
+        bS1.style.marginTop = '6px';
+        bS1.onclick = function(){
+          processRestore(JSON.parse(localStorage.getItem(SNAP_1)));
+        };
+        secBackup.appendChild(bS1);
+      }
+
+      if(meta && meta.s2 && localStorage.getItem(SNAP_2) && meta.s2 !== meta.s1){
+        var bS2 = el('button', 'sec', 'Restaurar Cópia de ' + fd(meta.s2));
+        bS2.style.marginTop = '6px';
+        bS2.onclick = function(){
+          processRestore(JSON.parse(localStorage.getItem(SNAP_2)));
+        };
+        secBackup.appendChild(bS2);
+      }
+    }
+
+    secBackup.appendChild(el('h3', '', 'Gerenciamento de Sugestões'));
+    var rCustom = el('div', 'row');
+    var bMeds = el('button', 'sec', '✏️ Meus Remédios');
+    bMeds.onclick = function(){ manageCustomItems('med'); };
+    var bExams = el('button', 'sec', '✏️ Meus Exames');
+    bExams.onclick = function(){ manageCustomItems('exam'); };
+    rCustom.appendChild(bMeds);
+    rCustom.appendChild(bExams);
+    secBackup.appendChild(rCustom);
+
+    s.appendChild(secBackup);
+
+    var rowClose = el('div', 'row');
+    rowClose.style.marginTop = '18px';
+    var bClose = el('button', 'sec', 'Fechar');
+    bClose.onclick = function(){ closeM(); };
+    rowClose.appendChild(bClose);
+    s.appendChild(rowClose);
+
+    openM();
+  }
+
+  // Tela de bloqueio por PIN
+  function lockScreen(){
+    isLocked = true;
+    var s = $('sheet');
+    s.innerHTML = '';
+    s.appendChild(el('h2', '', '🔒 Aplicativo Bloqueado'));
+    s.appendChild(el('p', 'note', 'Digite seu PIN de 4 dígitos para acessar os dados de saúde:'));
+
+    var pinIn = el('input');
+    pinIn.type = 'password';
+    pinIn.inputMode = 'numeric';
+    pinIn.maxLength = 4;
+    pinIn.style.textAlign = 'center';
+    pinIn.style.fontSize = '24px';
+    pinIn.style.letterSpacing = '8px';
+    s.appendChild(pinIn);
+
+    var bEnt = el('button', 'pri', 'Desbloquear');
+    bEnt.style.marginTop = '14px';
+    bEnt.onclick = function(){
+      if(pinIn.value.trim() === db.pin){
+        isLocked = false;
+        closeM();
+        render();
+      } else {
+        alert('PIN incorreto!');
+        pinIn.value = '';
+        pinIn.focus();
+      }
+    };
+    s.appendChild(bEnt);
+    openM();
+    setTimeout(function(){ pinIn.focus(); }, 150);
+  }
+
+  function render(){
+    if(isLocked) return;
+    checkBackupAlert();
+
+    var ch = $('chips');
+    ch.innerHTML = '';
+    db.m.forEach(function(m){
+      var b = el('button', 'chip-btn' + (m.id === db.sel ? ' on' : ''), m.name);
+      b.onclick = function(){
+        db.sel = m.id;
+        q = '';
+        selectedExamName = '';
+        save();
+        render();
+      };
+      ch.appendChild(b);
+    });
+
+    $('addFamBtn').onclick = function(){ editMember(); };
+
+    var p = $('panel');
+    p.innerHTML = '';
+    var m = cur();
+    if(!m){
+      p.appendChild(el('div', 'empty', 'Nenhum familiar cadastrado. Toque no botão acima para adicionar.'));
+      return;
+    }
+
+    var h = el('div', 'head');
+    var l = el('div');
+    l.appendChild(el('b', '', m.name));
+    if(m.o) l.appendChild(el('div', 'obs', m.o));
+    var e = el('button', 'link', 'Editar familiar');
+    e.onclick = function(){ editMember(m); };
+    h.appendChild(l);
+    h.appendChild(e);
+    p.appendChild(h);
+
+    var tb = el('div', 'tabs');
+    [['d','💊 Remédios'],['x','🧪 Exames'],['r','📋 Resumo']].forEach(function(t){
+      var b = el('button', tab === t[0] ? 'on' : '', t[1]);
+      b.onclick = function(){ tab = t[0]; render(); };
+      tb.appendChild(b);
+    });
+    p.appendChild(tb);
+
+    // ABA REMÉDIOS
+    if(tab === 'd'){
+      var a = el('button', 'pri', '+ Adicionar Medicamento');
+      a.onclick = function(){ editMed(); };
+      p.appendChild(a);
+
+      var all = db.d.filter(function(x){ return x.mid === m.id; });
+      var on = all.filter(function(x){ return x.st === 'on'; });
+      var off = all.filter(function(x){ return x.st !== 'on'; });
+
+      if(!all.length){
+        p.appendChild(el('div', 'empty', 'Nenhum medicamento registrado para ' + m.name + '.'));
+      }
+
+      var mvb = function(g, x){
+        var i = g.indexOf(x);
+        function go(dir){
+          var target = g[i + dir];
+          if(!target) return;
+          var aIdx = db.d.indexOf(x), bIdx = db.d.indexOf(target);
+          var tmp = db.d[aIdx];
+          db.d[aIdx] = db.d[bIdx];
+          db.d[bIdx] = tmp;
+          save();
+          render();
+        }
+        return {
+          up: function(){ go(-1); },
+          dn: function(){ go(1); },
+          f: i === 0,
+          l: i === g.length - 1
+        };
+      };
+
+      on.forEach(function(x, i){
+        var docInfo = [x.doc, x.spec].filter(Boolean).join(' - ');
+        if(docInfo) docInfo = '👨‍⚕️ ' + docInfo;
+        p.appendChild(card(
+          (i + 1) + '. ' + x.n,
+          [x.dose, x.f].filter(Boolean).join(' · '),
+          (x.s ? 'Início: ' + fd(x.s) : '') + (x.o ? (x.s ? ' · ' : '') + x.o : ''),
+          docInfo,
+          function(){ editMed(x); },
+          0,
+          mvb(on, x)
+        ));
+      });
+
+      if(off.length){
+        p.appendChild(el('h3', '', 'Medicamentos Suspensos / Histórico'));
+        off.forEach(function(x){
+          var docInfo = [x.doc, x.spec].filter(Boolean).join(' - ');
+          if(docInfo) docInfo = '👨‍⚕️ ' + docInfo;
+          p.appendChild(card(
+            x.n,
+            [x.dose, x.f].filter(Boolean).join(' · '),
+            x.o || '',
+            docInfo,
+            function(){ editMed(x); },
+            1,
+            mvb(off, x)
+          ));
+        });
+      }
+    }
+
+    // ABA EXAMES
+    if(tab === 'x'){
+      var a2 = el('button', 'pri', '+ Resultado de Exame');
+      a2.onclick = function(){ editExam(); };
+      p.appendChild(a2);
+
+      var all2 = db.x.filter(function(x){ return x.mid === m.id; });
+      if(all2.length){
+        var sIn = el('input', 'q');
+        sIn.placeholder = 'Buscar exame por nome...';
+        sIn.value = q;
+        sIn.oninput = function(){ q = sIn.value; list(); };
+        p.appendChild(sIn);
+
+        var so = el('select', 'q');
+        [
+          ['dd','Data: mais recente primeiro'],
+          ['da','Data: mais antiga primeiro'],
+          ['na','Nome: A a Z'],
+          ['nd','Nome: Z a A']
+        ].forEach(function(o){
+          var op = el('option', '', o[1]);
+          op.value = o[0];
+          so.appendChild(op);
+        });
+        so.value = xs;
+        so.onchange = function(){ xs = so.value; list(); };
+        p.appendChild(so);
+      }
+
+      var chartBox = el('div');
+      p.appendChild(chartBox);
+
+      var listBox = el('div');
+      p.appendChild(listBox);
+
+      var list = function(){
+        listBox.innerHTML = '';
+        chartBox.innerHTML = '';
+
+        if(selectedExamName){
+          var cEl = renderChart(m, selectedExamName);
+          if(cEl) chartBox.appendChild(cEl);
+        }
+
+        var kn = norm(q), count = 0;
+        all2.slice().sort(xcmp).forEach(function(x){
+          if(kn && norm(x.n).indexOf(kn) < 0) return;
+          count++;
+
+          var c = card(
+            x.n + ': ' + x.v + (x.u ? ' ' + x.u : ''),
+            fd(x.dt) + (x.r ? ' · Ref.: ' + x.r : ''),
+            x.o || '',
+            null,
+            function(){ editExam(x); }
+          );
+
+          var btnEvol = el('button', 'link', '📈 Evolução');
+          btnEvol.style.fontSize = '13px';
+          btnEvol.onclick = function(ev){
+            ev.stopPropagation();
+            selectedExamName = x.n;
+            render();
+          };
+          c.querySelector('.grow').appendChild(btnEvol);
+          listBox.appendChild(c);
+        });
+
+        if(!count){
+          listBox.appendChild(el('div', 'empty', all2.length ? 'Nenhum exame coincide com a busca.' : 'Nenhum exame registrado.'));
+        }
+      };
+      list();
+    }
+
+    // ABA RESUMO
+    if(tab === 'r'){
+      p.appendChild(el('pre', '', summary(m)));
+
+      var rowR = el('div', 'row');
+      rowR.style.marginTop = '0';
+      rowR.style.marginBottom = '10px';
+
+      var bCopy = el('button', 'pri', 'Copiar Texto');
+      bCopy.onclick = function(){ copy(summary(m)); };
+      rowR.appendChild(bCopy);
+
+      var bPrint = el('button', 'sec', '📄 Salvar PDF / Imprimir');
+      bPrint.onclick = function(){
+        try {
+          var printWin = window.open('', '_blank');
+          if(printWin){
+            var safeName = esc(m.name);
+            var safeText = esc(summary(m));
+            printWin.document.write('<!DOCTYPE html><html><head><title>Relatório - ' + safeName + '</title><style>body{font-family:system-ui,sans-serif;padding:24px;line-height:1.6;}pre{white-space:pre-wrap;font-size:15px;}</style></head><body><pre>' + safeText + '</pre></body></html>');
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(function(){ printWin.print(); printWin.close(); }, 300);
+            return;
+          }
+          window.print();
+        } catch(e){
+          toast('Copie o texto para imprimir manualmente.');
+        }
+      };
+      rowR.appendChild(bPrint);
+
+      p.appendChild(rowR);
+      p.appendChild(el('p', 'note', 'Você pode copiar o relatório formatado para o WhatsApp do seu médico ou gerar um PDF impresso para levar à consulta.'));
+    }
+  }
+
+  $('cfg').onclick = settings;
+
+  if(db.pin){
+    lockScreen();
+  } else {
+    if(!db.sel && db.m.length) db.sel = db.m[0].id;
+    render();
+  }
+
+  // Notificação suave de atualização do Service Worker
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('./sw.js').then(function(reg){
+        reg.addEventListener('updatefound', function(){
+          var newWorker = reg.installing;
+          newWorker.addEventListener('statechange', function(){
+            if(newWorker.state === 'installed' && navigator.serviceWorker.controller){
+              var ban = $('appBanner');
+              var w = el('div', 'banner');
+              w.appendChild(el('span', '', '✨ Nova versão disponível!'));
+              var b = el('button', '', 'Atualizar agora');
+              b.onclick = function(){ window.location.reload(); };
+              w.appendChild(b);
+              ban.appendChild(w);
+            }
+          });
+        });
+      }).catch(function(e){});
+    });
+  }
+})();
+</script>
+</body>
+</html>
