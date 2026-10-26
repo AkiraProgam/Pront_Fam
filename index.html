@@ -246,6 +246,20 @@ h3 {
   text-transform: uppercase;
   letter-spacing: .04em;
 }
+
+/* Centralização de títulos e botões */
+.center-title {
+  text-align: center;
+}
+.btn-center-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.btn-center-wrap button {
+  min-width: 160px;
+}
+
 input, textarea, select {
   width: 100%;
   font: inherit;
@@ -472,12 +486,10 @@ pre {
   var isModalActive = false;
   var isLocked = false;
   
-  // Solicita persistência no Android/Chromium para evitar descarte por limpeza de disco
   if (navigator.storage && navigator.storage.persist) {
     navigator.storage.persist().catch(function(){});
   }
 
-  // Sanitização estrita contra XSS
   function esc(s){
     if(s == null) return '';
     return String(s)
@@ -507,7 +519,6 @@ pre {
     return s ? s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : '';
   }
 
-  // Validação estrita da estrutura dos dados
   function validateSchema(o){
     if(!o || typeof o !== 'object') return false;
     if(!Array.isArray(o.m) || !Array.isArray(o.d) || !Array.isArray(o.x)) return false;
@@ -548,7 +559,6 @@ pre {
         if(validateSchema(parsed)){
           return migrateData(parsed);
         } else {
-          // Dado corrompido ou inválido: preserva cópia de segurança antes de iniciar
           var dumpKey = 'saude_familia_corrupted_raw_' + Date.now();
           localStorage.setItem(dumpKey, raw);
           alert('Atenção: O banco de dados apresentou inconsistência estrutural. Uma cópia bruta foi protegida na chave "' + dumpKey + '".');
@@ -568,7 +578,6 @@ pre {
 
   var db = load();
 
-  // Aplica preferência visual de fonte
   if(db.fontSize && db.fontSize !== 'normal'){
     document.documentElement.setAttribute('data-font', db.fontSize);
   }
@@ -585,7 +594,6 @@ pre {
     tt = setTimeout(function(){ e.hidden = true; }, 3200);
   }
 
-  // Gerenciamento de histórico de navegação para o botão Voltar do Android
   function openM(){
     $('modal').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -612,7 +620,6 @@ pre {
     }
   });
 
-  // Snapshots automáticos diários de segurança (últimos 2 dias de uso)
   function handleDailySnapshots(){
     try {
       var t = today();
@@ -648,7 +655,6 @@ pre {
     }
   }
 
-  // Sincronização entre abas abertas simultaneamente
   window.addEventListener('storage', function(e){
     if(e.key === KEY && e.newValue){
       try {
@@ -707,12 +713,10 @@ pre {
     return true;
   }
 
-  // Parser numérico compatível com formatações brasileiras e valores compostos
   function parseVal(valStr){
     if(!valStr) return null;
     var s = ('' + valStr).trim();
     
-    // Detecta pressão arterial (ex.: 120/80 ou 12/8)
     if(s.indexOf('/') >= 0){
       var parts = s.split('/');
       var p1 = parseFloat(parts[0].replace(/\./g, '').replace(',', '.').trim());
@@ -725,7 +729,6 @@ pre {
       return null;
     }
 
-    // Trata pontos de milhar e vírgula decimal (ex.: 220.000 ou 6,5)
     var cleaned = s;
     if(cleaned.indexOf('.') >= 0 && cleaned.indexOf(',') >= 0){
       cleaned = cleaned.replace(/\./g, '').replace(',', '.');
@@ -734,7 +737,6 @@ pre {
     } else if(cleaned.indexOf('.') >= 0){
       var partsDot = cleaned.split('.');
       if(partsDot.length === 2 && partsDot[1].length === 3 && parseInt(partsDot[0], 10) > 10){
-        // Ex.: 220.000 -> 220000 (milhar sem vírgula)
         cleaned = partsDot[0] + partsDot[1];
       }
     }
@@ -743,7 +745,6 @@ pre {
     return isNaN(num) ? null : { isBP: false, val: num, raw: s };
   }
 
-  // Base farmacológica clínica revisada (RENAME / Atenção Básica e Especializada)
   var MEDS_BASE = [
     'Acebrofilina=5 mg/mL xarope adulto;25 mg/5 mL xarope infantil',
     'Acetato de dexametasona=1 mg/g creme dermatológico',
@@ -1019,7 +1020,6 @@ pre {
     }
   }
 
-  // Hook com ordenação por 'startsWith' e evento de clique suave
   function setupAutocomplete(inputEl, getItemsFn, onSelectFn){
     var wrap = el('div', 'input-wrap');
     inputEl.parentNode.insertBefore(wrap, inputEl);
@@ -1553,7 +1553,7 @@ pre {
     var key = isMed ? 'customMeds' : 'customExams';
     var title = isMed ? '💊 Gerenciar Remédios Salvos' : '🧪 Gerenciar Exames Salvos';
 
-    s.appendChild(el('h2', '', title));
+    s.appendChild(el('h2', 'center-title', title));
     s.appendChild(el('p', 'note', 'Edite a grafia de itens digitados com erro ou exclua-os para não poluir o autocompletar.'));
 
     var wrap = el('div');
@@ -1608,11 +1608,12 @@ pre {
   function settings(){
     var s = $('sheet');
     s.innerHTML = '';
-    s.appendChild(el('h2', '', '⚙️ Configurações & Segurança'));
+    var h2 = el('h2', 'center-title', '⚙️ Configurações & Segurança');
+    s.appendChild(h2);
 
-    // Tamanho da fonte para acessibilidade
+    // 1. Acessibilidade (Tamanho do Texto) - Centralizado
     var secFont = el('div');
-    secFont.appendChild(el('h3', '', 'Acessibilidade (Tamanho do Texto)'));
+    secFont.appendChild(el('h3', 'center-title', 'Acessibilidade (Tamanho do Texto)'));
     var selFont = el('select');
     [
       ['normal', 'Texto Padrão (16px)'],
@@ -1632,9 +1633,9 @@ pre {
     secFont.appendChild(selFont);
     s.appendChild(secFont);
 
-    // Proteção por PIN opcional
+    // 2. Privacidade (Proteção por PIN) - Centralizado
     var secPin = el('div');
-    secPin.appendChild(el('h3', '', 'Privacidade (Proteção por PIN)'));
+    secPin.appendChild(el('h3', 'center-title', 'Privacidade (Proteção por PIN)'));
     var pInfo = el('p', 'note', db.pin ? '🔒 O app está protegido por um PIN de 4 dígitos.' : 'O app está sem senha. Defina um PIN para impedir acesso de terceiros neste aparelho.');
     secPin.appendChild(pInfo);
 
@@ -1666,9 +1667,9 @@ pre {
     secPin.appendChild(bPin);
     s.appendChild(secPin);
 
-    // Backup e Compartilhamento
+    // 3. Backup & Restauração - Centralizado
     var secBackup = el('div');
-    secBackup.appendChild(el('h3', '', 'Backup & Restauração'));
+    secBackup.appendChild(el('h3', 'center-title', 'Backup & Restauração'));
     secBackup.appendChild(el('p', 'note', '⚠️ O arquivo de backup contém informações de saúde descriptografadas. Guarde-o em local seguro (seu Google Drive pessoal, pasta protegida ou e-mail pessoal).'));
 
     var r1 = el('div', 'row');
@@ -1731,7 +1732,8 @@ pre {
     var bImpText = el('button', 'sec', '📝 Colar Texto');
     bImpText.onclick = function(){
       s.innerHTML = '';
-      s.appendChild(el('h2', '', 'Restaurar de Texto JSON'));
+      var hRest = el('h2', 'center-title', 'Restaurar de Texto JSON');
+      s.appendChild(hRest);
       s.appendChild(el('p', 'note', 'Cole o conteúdo completo do backup abaixo:'));
       var ta = el('textarea');
       ta.rows = 8;
@@ -1758,13 +1760,13 @@ pre {
     r2.appendChild(bImpText);
     secBackup.appendChild(r2);
 
-    // Restauração Prévia e Snapshots Diários
+    // 4. Pontos de Segurança Automáticos - Centralizado
     var preRest = localStorage.getItem(PRE_RESTORE_KEY);
     var metaStr = localStorage.getItem(SNAP_DATES);
     var meta = metaStr ? JSON.parse(metaStr) : null;
 
     if(preRest || (meta && (meta.s1 || meta.s2))){
-      secBackup.appendChild(el('h3', '', 'Pontos de Segurança Automáticos'));
+      secBackup.appendChild(el('h3', 'center-title', 'Pontos de Segurança Automáticos'));
 
       if(preRest){
         var bPre = el('button', 'sec', 'Desfazer Última Restauração');
@@ -1796,7 +1798,8 @@ pre {
       }
     }
 
-    secBackup.appendChild(el('h3', '', 'Gerenciamento de Sugestões'));
+    // 5. Gerenciamento de Sugestões - Centralizado
+    secBackup.appendChild(el('h3', 'center-title', 'Gerenciamento de Sugestões'));
     var rCustom = el('div', 'row');
     var bMeds = el('button', 'sec', '✏️ Meus Remédios');
     bMeds.onclick = function(){ manageCustomItems('med'); };
@@ -1808,8 +1811,8 @@ pre {
 
     s.appendChild(secBackup);
 
-    var rowClose = el('div', 'row');
-    rowClose.style.marginTop = '18px';
+    // Botão Fechar - Centralizado
+    var rowClose = el('div', 'btn-center-wrap');
     var bClose = el('button', 'sec', 'Fechar');
     bClose.onclick = function(){ closeM(); };
     rowClose.appendChild(bClose);
@@ -1818,12 +1821,11 @@ pre {
     openM();
   }
 
-  // Tela de bloqueio por PIN
   function lockScreen(){
     isLocked = true;
     var s = $('sheet');
     s.innerHTML = '';
-    s.appendChild(el('h2', '', '🔒 Aplicativo Bloqueado'));
+    s.appendChild(el('h2', 'center-title', '🔒 Aplicativo Bloqueado'));
     s.appendChild(el('p', 'note', 'Digite seu PIN de 4 dígitos para acessar os dados de saúde:'));
 
     var pinIn = el('input');
@@ -1899,7 +1901,6 @@ pre {
     });
     p.appendChild(tb);
 
-    // ABA REMÉDIOS
     if(tab === 'd'){
       var a = el('button', 'pri', '+ Adicionar Medicamento');
       a.onclick = function(){ editMed(); };
@@ -1965,7 +1966,6 @@ pre {
       }
     }
 
-    // ABA EXAMES
     if(tab === 'x'){
       var a2 = el('button', 'pri', '+ Resultado de Exame');
       a2.onclick = function(){ editExam(); };
@@ -2041,7 +2041,6 @@ pre {
       list();
     }
 
-    // ABA RESUMO
     if(tab === 'r'){
       p.appendChild(el('pre', '', summary(m)));
 
@@ -2087,7 +2086,6 @@ pre {
     render();
   }
 
-  // Notificação suave de atualização do Service Worker
   if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('./sw.js').then(function(reg){
