@@ -247,7 +247,6 @@ h3 {
   letter-spacing: .04em;
 }
 
-/* Centralização de títulos e botões */
 .center-title {
   text-align: center;
 }
@@ -1605,13 +1604,29 @@ pre {
     s.appendChild(bBack);
   }
 
+  // Função dedicada para disparar o download com suporte universal aos navegadores
+  function triggerDownload(jsonStr, fileName){
+    var blob = new Blob([jsonStr], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 500);
+  }
+
   function settings(){
     var s = $('sheet');
     s.innerHTML = '';
     var h2 = el('h2', 'center-title', '⚙️ Configurações & Segurança');
     s.appendChild(h2);
 
-    // 1. Acessibilidade (Tamanho do Texto) - Centralizado
+    // 1. Acessibilidade
     var secFont = el('div');
     secFont.appendChild(el('h3', 'center-title', 'Acessibilidade (Tamanho do Texto)'));
     var selFont = el('select');
@@ -1633,7 +1648,7 @@ pre {
     secFont.appendChild(selFont);
     s.appendChild(secFont);
 
-    // 2. Privacidade (Proteção por PIN) - Centralizado
+    // 2. Privacidade por PIN
     var secPin = el('div');
     secPin.appendChild(el('h3', 'center-title', 'Privacidade (Proteção por PIN)'));
     var pInfo = el('p', 'note', db.pin ? '🔒 O app está protegido por um PIN de 4 dígitos.' : 'O app está sem senha. Defina um PIN para impedir acesso de terceiros neste aparelho.');
@@ -1667,33 +1682,46 @@ pre {
     secPin.appendChild(bPin);
     s.appendChild(secPin);
 
-    // 3. Backup & Restauração - Centralizado
+    // 3. Backup & Restauração
     var secBackup = el('div');
     secBackup.appendChild(el('h3', 'center-title', 'Backup & Restauração'));
     secBackup.appendChild(el('p', 'note', '⚠️ O arquivo de backup contém informações de saúde descriptografadas. Guarde-o em local seguro (seu Google Drive pessoal, pasta protegida ou e-mail pessoal).'));
 
     var r1 = el('div', 'row');
-    var bShare = el('button', 'pri', '📤 Compartilhar / Salvar');
+    var bShare = el('button', 'pri', '💾 Baixar / Salvar');
     bShare.onclick = function(){
       db.lastBackup = Date.now();
       save();
       var json = JSON.stringify(db, null, 2);
-      var blob = new Blob([json], { type: 'application/json' });
-      var file = new File([blob], 'saude_familia_' + today() + '.json', { type: 'application/json' });
+      var fileName = 'saude_familia_' + today() + '.json';
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-      if(navigator.canShare && navigator.canShare({ files: [file] })){
-        navigator.share({
-          files: [file],
-          title: 'Backup Saúde da Família',
-          text: 'Backup dos meus registros de saúde.'
-        }).catch(function(){});
-      } else {
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'saude_familia_' + today() + '.json';
-        a.click();
-        toast('Arquivo baixado para a pasta de downloads.');
+      // Em dispositivos móveis (Android/iOS), tenta a gaveta de compartilhamento (WhatsApp/Drive)
+      if (isMobile && navigator.share && navigator.canShare) {
+        try {
+          var blob = new Blob([json], { type: 'application/json' });
+          var file = new File([blob], fileName, { type: 'application/json' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'Backup Saúde da Família',
+              text: 'Backup dos meus registros de saúde.'
+            }).then(function(){
+              toast('Backup compartilhado!');
+            }).catch(function(err){
+              if (err.name !== 'AbortError') {
+                triggerDownload(json, fileName);
+                toast('Arquivo baixado para a pasta de downloads.');
+              }
+            });
+            return;
+          }
+        } catch(e) {}
       }
+
+      // No computador (ou se o compartilhamento falhar no celular), faz download direto do arquivo
+      triggerDownload(json, fileName);
+      toast('Arquivo baixado para a pasta Downloads!');
     };
 
     var bCopyText = el('button', 'sec', '📋 Copiar Texto');
@@ -1760,7 +1788,7 @@ pre {
     r2.appendChild(bImpText);
     secBackup.appendChild(r2);
 
-    // 4. Pontos de Segurança Automáticos - Centralizado
+    // 4. Pontos de Segurança Automáticos
     var preRest = localStorage.getItem(PRE_RESTORE_KEY);
     var metaStr = localStorage.getItem(SNAP_DATES);
     var meta = metaStr ? JSON.parse(metaStr) : null;
@@ -1798,7 +1826,7 @@ pre {
       }
     }
 
-    // 5. Gerenciamento de Sugestões - Centralizado
+    // 5. Gerenciamento de Sugestões
     secBackup.appendChild(el('h3', 'center-title', 'Gerenciamento de Sugestões'));
     var rCustom = el('div', 'row');
     var bMeds = el('button', 'sec', '✏️ Meus Remédios');
@@ -1811,7 +1839,7 @@ pre {
 
     s.appendChild(secBackup);
 
-    // Botão Fechar - Centralizado
+    // Botão Fechar
     var rowClose = el('div', 'btn-center-wrap');
     var bClose = el('button', 'sec', 'Fechar');
     bClose.onclick = function(){ closeM(); };
